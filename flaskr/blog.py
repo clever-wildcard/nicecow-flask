@@ -20,9 +20,9 @@ def index():
     return render_template('blog/index.html', posts=posts)
 
 
-@bp.route('/create', methods=('GET', 'POST'))
+@bp.route('/create/post', methods=('GET', 'POST'))
 @login_required
-def create():
+def create_post():
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
@@ -42,8 +42,32 @@ def create():
             )
             db.commit()
             return redirect(url_for('blog.index'))
+    return render_template('blog/create_post.html')
 
-    return render_template('blog/create.html')
+
+@bp.route('/create/help-request', methods=('GET', 'POST'))
+@login_required
+def create_help_request():
+    if request.method == 'POST':
+        title = request.form['title']
+        body = request.form['body']
+        error = None
+
+        if not title:
+            error = 'Title is required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'INSERT INTO help_request (title, body, author_id)'
+                ' VALUES (?, ?, ?)',
+                (title, body, g.user['id'])
+            )
+            db.commit()
+            return redirect(url_for('blog.index'))
+    return render_template('blog/create_help_request.html')
 
 
 def get_post(id, check_author=True):
