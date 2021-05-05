@@ -13,6 +13,5 @@ CREATE TABLE post (
                       created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                       title TEXT NOT NULL,
                       body TEXT NOT NULL,
-                      help BIT NOT NULL bit_length 2,
                       FOREIGN KEY (author_id) REFERENCES user (id)
 );
